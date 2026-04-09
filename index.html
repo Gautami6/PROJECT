@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Archive | Curated Literature</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+   
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="light-mode">
+
+    
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-box">
+            <h1 style="font-family: var(--font-heading); margin-bottom: 0.5rem; font-size: 2.5rem; color: var(--text-primary); text-align: center;">THE ARCHIVE</h1>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary); text-align: center;">Enter your username to access your collection.</p>
+            <form id="loginForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                <input type="text" id="usernameInput" placeholder="Choose a Username" required style="padding: 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text-primary); font-family: var(--font-body); font-size: 1rem; text-align: center;">
+                <input type="password" id="passwordInput" placeholder="Password" required style="padding: 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text-primary); font-family: var(--font-body); font-size: 1rem; text-align: center;">
+                <button type="submit" class="fav-action-btn" style="width: 100%; max-width: none;">Enter Archive</button>
+            </form>
+        </div>
+        <button id="darkToggleAuth" onclick="app.toggleDarkMode()" class="icon-btn" aria-label="Toggle Dark Mode" style="position:absolute; bottom:2rem; right:2rem;">
+            <svg class="icon-moon-auth" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            <svg class="icon-sun-auth" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+    </div>
+
+   
+    <div id="appContainer" style="display:none;">
+
+    
+    <nav class="top-nav">
+        <div class="nav-content">
+            <h1 class="brand" onclick="app.showSection('all')">THE ARCHIVE</h1>
+            <div class="nav-links">
+                <button onclick="app.showSection('all')" id="allLink" class="nav-btn active">Catalog</button>
+                <button onclick="app.showSection('favs')" id="favLink" class="nav-btn" style="display:none;">Reading List (<span id="favCount">0</span>)</button>
+                <button onclick="app.showSection('goals')" id="goalsLink" class="nav-btn" style="display:none;">Goals</button>
+                <button onclick="app.showSection('quiz')" id="quizLink" class="nav-btn">Quiz</button>
+                <div id="pointsDisplay" style="display:none; color: var(--accent); font-weight: bold; margin: 0 0.5rem;"><span id="pointsValue">0</span> Pts</div>
+                <button id="logoutBtn" onclick="app.logout()" class="nav-btn">Logout</button>
+                <button id="darkToggle" onclick="app.toggleDarkMode()" class="icon-btn" aria-label="Toggle Dark Mode">
+                    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    
+    <header class="catalog-header" id="catalogHeader">
+        <div class="header-inner">
+            <h2 id="pageTitle" class="page-title">Browse the Collection</h2>
+            <p class="page-subtitle">Discover literature curated perfectly for your current mood.</p>
+            <div class="search-wrapper">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="searchInput" placeholder="Search by title or author...">
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        
+      
+        <div id="catalogSection">
+            
+            <div class="mood-bar-wrapper">
+                <span class="filter-label">I'm feeling:</span>
+                <div class="mood-bar" id="moodBar">
+                    <button class="mood-btn active" data-mood="all">All</button>
+                    <button class="mood-btn" data-mood="Rainy">Rainy</button>
+                    <button class="mood-btn" data-mood="Deep Thinking">Deep Thinking</button>
+                    <button class="mood-btn" data-mood="Romantic">Romantic</button>
+                    <button class="mood-btn" data-mood="Dark">Dark</button>
+                    <button class="mood-btn" data-mood="Epic">Epic</button>
+                    <button class="mood-btn" data-mood="Reflective">Reflective</button>
+                </div>
+            </div>
+
+          
+            <div class="genre-nav-wrapper">
+                <span class="filter-label">Genre:</span>
+                <div class="genre-nav" id="genreNav">
+                    <button class="genre-btn active" data-filter="all">All Genres</button>
+                    <button class="genre-btn" data-filter="Classic">Classics</button>
+                    <button class="genre-btn" data-filter="Sci-Fi">Sci-Fi</button>
+                    <button class="genre-btn" data-filter="Dystopian">Dystopian</button>
+                    <button class="genre-btn" data-filter="Literary">Literary</button>
+                    <button class="genre-btn" data-filter="Fantasy">Fantasy</button>
+                </div>
+            </div>
+
+            
+            <section id="bookGrid" class="book-grid">
+                
+            </section>
+            
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <h3>No books found</h3>
+                <p>Try adjusting your search or filters.</p>
+            </div>
+        </div>
+
+       
+        <section id="goalsPage" class="goals-page" style="display:none;">
+            <div class="goals-header">
+                <h2>My Reading Progress</h2>
+                <p>Track your literary journey over the year.</p>
+            </div>
+            <div class="goals-container">
+                <div class="chart-wrapper">
+                    <canvas id="goalsChart"></canvas>
+                </div>
+                <div class="stats-cards">
+                    <div class="stat-card" style="border-top-color: #3b82f6;">
+                        <h3 style="display:flex; justify-content:space-between; align-items:center;">Books Read <button onclick="app.editGoal()" class="icon-btn" style="padding:0; font-size:1.2rem; cursor:pointer; background:none; border:none; color:var(--text-secondary);" title="Set Yearly Goal">✎</button></h3>
+                        <p class="stat-value"><span id="statBooksRead">0</span> <span style="font-size:1.2rem; color:var(--text-secondary);">/ <span id="statYearlyGoal">50</span></span></p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pages Turned</h3>
+                        <p class="stat-value" id="statPagesTurned">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Current Streak</h3>
+                        <p class="stat-value" id="statStreak">0 Days</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+      
+        <div id="shelfDropzone" class="shelf-drawer">
+            <div class="shelf-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+                <span>Drop book here to add to Reading List</span>
+            </div>
+        </div>
+
+   
+        <section id="quizPage" class="quiz-page" style="display:none;">
+            <div class="goals-header">
+                <h2>What should you read next?</h2>
+                <p>Answer a few questions to find your perfect match and earn points!</p>
+            </div>
+            
+            <div id="quizContainer" class="quiz-container">
+              
+            </div>
+        </section>
+
+    </main>
+
+    </div>
+
+    
+    <div id="bookModal" class="modal" onclick="app.closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal" onclick="app.closeModal(event)" aria-label="Close modal">&times;</button>
+            <div class="modal-body">
+                <div class="modal-img-container">
+                    <img id="modalImg" alt="Book cover">
+                    <button id="modalFavBtn" class="fav-action-btn" style="margin-bottom: 0.5rem;">Add to Reading List</button>
+                    <button id="modalCompleteBtn" class="fav-action-btn">Mark as Completed</button>
+                </div>
+                <div class="modal-info">
+                    <div class="modal-tags">
+                        <span id="modalMood" class="tag mood-tag"></span>
+                        <span id="modalGenre" class="tag genre-tag"></span>
+                    </div>
+                    <h2 id="modalTitle"></h2>
+                    <p id="modalAuthor" class="author"></p>
+                    
+                    <div class="rating-widget" id="ratingWidget" style="margin-top: 0.5rem;">
+                        <span class="star" data-val="1">★</span>
+                        <span class="star" data-val="2">★</span>
+                        <span class="star" data-val="3">★</span>
+                        <span class="star" data-val="4">★</span>
+                        <span class="star" data-val="5">★</span>
+                    </div>
+
+                    <div class="divider"></div>
+                    <p id="modalDesc" class="description"></p>
+                    
+                    <div class="modal-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Pages:</span>
+                            <span id="modalPages" class="meta-val"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Published:</span>
+                            <span id="modalYear" class="meta-val"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
